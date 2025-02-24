@@ -21,3 +21,31 @@ A path can take two forms:
 - A relative path starts from the current module and uses `self`, `super`, or an identifier in the current module.
 
 We can construct relative paths that begin in the parent module, rather than the current module or the crate root, by using super at the start of the path. This is like starting a filesystem path with the .. syntax.
+
+Nested paths to bring the same items into scope in one line:
+```rs
+// --snip--
+use std::{cmp::Ordering, io};
+// --snip--
+```
+
+So...
+```rs
+use std::io;
+use std::io::Write;
+```
+
+Becomes...
+```rs
+use std::io::{self, Write};
+```
+
+If we want to bring all public items defined in a path into scope, we can specify that path followed by the * glob operator:
+```rs
+use std::collections::*;
+```
+
+
+
+```rs
+```
