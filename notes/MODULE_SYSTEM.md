@@ -19,3 +19,5 @@ crate
 A path can take two forms:
 - An absolute path is the full path starting from a crate root; for code from an external crate, the absolute path begins with the crate name, and for code from the current crate, it starts with the literal crate.
 - A relative path starts from the current module and uses `self`, `super`, or an identifier in the current module.
+
+We can construct relative paths that begin in the parent module, rather than the current module or the crate root, by using super at the start of the path. This is like starting a filesystem path with the .. syntax.
