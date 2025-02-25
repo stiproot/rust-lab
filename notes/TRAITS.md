@@ -66,3 +66,55 @@ pub fn notify(item: &impl Summary) {
     println!("Breaking news! {}", item.summarize());
 }
 ```
+
+Say we wanted notify to use display formatting as well as summarize on item: we specify in the notify definition that item must implement both Display and Summary. 
+We can do so using the + syntax:
+```rs
+pub fn notify(item: &(impl Summary + Display)) {
+  // snip ---
+}
+```
+
+The + syntax is also valid with trait bounds on generic types:
+```rs
+pub fn notify<T: Summary + Display>(item: &T) {
+  // snip ---
+}
+```
+
+**where**
+Using too many trait bounds has its downsides. 
+Each generic has its own trait bounds, so functions with multiple generic type parameters can contain lots of trait bound information between the function’s name and its parameter list, making the function signature hard to read. 
+For this reason, Rust has alternate syntax for specifying trait bounds inside a where clause after the function signature. 
+
+So, instead of writing this:
+```rs
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
+```
+
+we can use a where clause, like this:
+
+```rs
+fn some_function<T, U>(t: &T, u: &U) -> i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+```
+
+**returning types that implement traits**
+
+(However, you can only use impl Trait if you’re returning a single type.)
+
+```rs
+fn returns_summarizable() -> impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    }
+}
+```
