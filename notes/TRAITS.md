@@ -36,3 +36,33 @@ impl Summary for Tweet {
 }
 
 ```
+
+## Default Implementation
+
+```rs
+pub trait Summary {
+    fn summarize(&self) -> String {
+        String::from("(Read more...)")
+    }
+}
+
+impl Summary for NewsArticle {}
+```
+
+Default implementations can reference other methods defined in a trait...
+```rs
+pub trait Summary {
+    fn summarize_author(&self) -> String;
+
+    fn summarize(&self) -> String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
+}
+```
+
+## Traits as Parameters
+```rs
+pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+```
