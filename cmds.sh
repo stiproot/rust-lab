@@ -14,3 +14,15 @@ cargo test add
 
 IGNORE_CASE=1 cargo run -- to poem.txt
 cargo run -- to poem.txt > output.txt
+
+cargo build --release
+cargo doc
+cargo doc --open
+
+ccargo login
+# > abcdefghijklmnopqrstuvwxyz012345
+# This command will inform Cargo of your API token and store it locally in ~/.cargo/credentials.
+
+cargo publish
+cargo yank --vers 1.0.1
+cargo yank --vers 1.0.1 --undo
