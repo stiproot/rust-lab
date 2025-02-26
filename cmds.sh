@@ -11,3 +11,6 @@ cargo test -- --include-ignored
 # For example, because two of our tests’ names contain add, we can run those two by running cargo test add:
 cargo test add
 
+
+IGNORE_CASE=1 cargo run -- to poem.txt
+cargo run -- to poem.txt > output.txt
