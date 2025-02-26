@@ -83,7 +83,7 @@ Closures, on the other hand, aren’t used in an exposed interface like this: th
 Closures are typically short and relevant only within a narrow context rather than in any arbitrary scenario. 
 Within these limited contexts, the compiler can infer the types of the parameters and the return type, similar to how it’s able to infer the types of most variables (there are rare cases where the compiler needs closure type annotations too).
 
-## Closre Type Annotations
+## Closure Type Annotations
 
 ```rs
 let expensive_closure = |num: u32| -> u32 {
@@ -156,6 +156,8 @@ fn main() {
 ```
 *Using **move** to force the closure for a thread to take ownership of list.*
 
+## Fn Traits
+Closures will automatically implement one, two, or all three of these Fn traits, in an additive fashion, depending on how the closure’s body handles the values:
 - **FnOnce** applies to closures that can be called once. All closures implement at least this trait, because all closures can be called. A closure that moves captured values out of its body will only implement FnOnce and none of the other Fn traits, because it can only be called once.
 - **FnMut** applies to closures that don’t move captured values out of their body, but that might mutate the captured values. These closures can be called more than once.
 - **Fn** applies to closures that don’t move captured values out of their body and that don’t mutate captured values, as well as closures that capture nothing from their environment. These closures can be called more than once without mutating their environment, which is important in cases such as calling a closure multiple times concurrently.
