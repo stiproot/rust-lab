@@ -15,6 +15,7 @@ My personal laboratory for experimenting with the Rust programming language.
 - [TRAITS](notes/TRAITS.md)
 - [TYPES](notes/TYPES.md)
 - [COLLECTIONS](notes/COLLECTIONS.md)
+- [ITERATORS](notes/ITERATORS.md)
 
 ## Projects
 - [guessting-game/README.md](guessing_game/README.md)
