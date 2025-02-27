@@ -6,6 +6,15 @@ fn main() {
 
     assert_eq!(5, x);
     assert_eq!(5, *y);
+
+    let m = MyBox::new(String::from("Rust"));
+
+    // Deref coercion makes it possible to call hello with a reference to a value of type MyBox<String>.
+    hello(&m);
+}
+
+fn hello(name: &str) {
+    println!("Hello, {name}!");
 }
 
 struct MyBox<T>(T);
