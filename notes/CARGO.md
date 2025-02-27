@@ -51,3 +51,7 @@ license = "MIT OR Apache-2.0"
 *Yanking*
 Yanking a version prevents new projects from depending on that version while allowing all existing projects that depend on it to continue. 
 Essentially, a yank means that all projects with a Cargo.lock will not break, and any future Cargo.lock files generated will not use the yanked version.
+
+The `cargo install` command allows you to install and use binary crates locally.
+Note that you can only install packages that have binary targets. 
+A binary target is the runnable program that is created if the crate has a src/main.rs file or another file specified as a binary, as opposed to a library target that isn’t runnable on its own but is suitable for including within other programs. 
