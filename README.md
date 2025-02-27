@@ -17,6 +17,7 @@ My personal laboratory for experimenting with the Rust programming language.
 - [COLLECTIONS](notes/COLLECTIONS.md)
 - [ITERATORS](notes/ITERATORS.md)
 - [CARGO](notes/CARGO.md)
+- [SMART POINTERS](notes/SMART_POINTERS.md)
 
 ## Projects
 - [guessting-game/README.md](guessing_game/README.md)
@@ -24,3 +25,4 @@ My personal laboratory for experimenting with the Rust programming language.
 - [error-lab/README.md](errors/README.md)
 - [addr/README.md](addr/README.md)
 - [rectangles/README.md](rectangles/README.md)
+- [boxing/README.md](boxing/README.md)
