@@ -130,3 +130,109 @@ Therefore, Rust can’t make the assumption that converting an immutable referen
 Drop lets you customize what happens when a value is about to go out of scope. 
 You can provide an implementation for the Drop trait on any type, and that code can be used to release resources like files or network connections.
 
+```rs
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}
+```
+*Rust automatically called drop for us when our instances went out of scope, calling the code we specified.* 
+
+Occasionally, you might want to clean up a value early. 
+One example is when using smart pointers that manage locks: you might want to force the drop method that releases the lock so that other code in the same scope can acquire the lock. 
+Rust doesn’t let you call the `Drop` trait’s drop method manually; instead you have to call the `std::mem::drop` function provided by the standard library if you want to force a value to be dropped before the end of its scope.
+
+
+The std::mem::drop function is different from the drop method in the Drop trait. 
+We call it by passing as an argument the value we want to force drop. 
+```rs
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}
+```
+*The text Dropping CustomSmartPointer with data `some data`! is printed between the CustomSmartPointer created. and CustomSmartPointer dropped before the end of main. text, showing that the drop method code is called to drop c at that point.*
+
+# Rc<T>
+In the majority of cases, ownership is clear: you know exactly which variable owns a given value. 
+However, there are cases when a single value might have multiple owners. 
+For example, in graph data structures, multiple edges might point to the same node, and that node is conceptually owned by all of the edges that point to it.
+`Rc<T>` is only for use in single-threaded scenarios.
+
+You have to enable multiple ownership explicitly by using the Rust type `Rc<T>`, which is an abbreviation for reference counting.
+The `Rc<T>` type keeps track of the number of references to a value to determine whether or not the value is still in use.
+
+```rs
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    let b = Cons(3, Rc::clone(&a));
+    let c = Cons(4, Rc::clone(&a));
+}
+```
+*Cons list refactored to cater for shared lists, only possible with `Rc`*
+
+The implementation of `Rc::clone` doesn’t make a deep copy of all the data like most types’ implementations of clone do. 
+The call to `Rc::clone` only increments the reference count, which doesn’t take much time. 
+
+```rs
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("count after creating a = {}", Rc::strong_count(&a));
+    let b = Cons(3, Rc::clone(&a));
+    println!("count after creating b = {}", Rc::strong_count(&a));
+    {
+        let c = Cons(4, Rc::clone(&a));
+        println!("count after creating c = {}", Rc::strong_count(&a));
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&a));
+}
+```
+
+# RefCell<T>
+The *Interior mutability* is a design pattern in Rust that allows you to mutate data even when there are immutable references to that data; normally this action is disallowed by tghe borrowing rules.
+To mutate data, the pattern uses `unsafe` code inside a data structure to bend Rust's usual rules that govern mutation and borrowing.
+`RefCell<T>` is only for use in single-threaded scenarios.
+
+Recall the borrowing rules:
+- At any given time, you can have either (but not both) one mutable reference or any number of immutable references.
+- References must always be valid.
+
+With references and `Box<T>`, the borrowing rules’ invariants are enforced at compile time. 
+With `RefCell<T>`, these invariants are enforced at runtime. 
+With references, if you break these rules, you’ll get a compiler error. 
+With `RefCell<T>`, if you break these rules, your program will panic and exit.
+
+The `RefCell<T>` type is useful when you’re sure your code follows the borrowing rules but the compiler is unable to understand and guarantee that.
+
+
+Here is a recap of the reasons to choose `Box<T>`, `Rc<T>`, or `RefCell<T>`:
+- `Rc<T>` enables multiple owners of the same data; `Box<T>` and `RefCell<T>` have single owners.
+- `Box<T>` allows immutable or mutable borrows checked at compile time; `Rc<T>` allows only immutable borrows checked at compile time; `RefCell<T>` allows immutable or mutable borrows checked at runtime.
+- Because `RefCell<T>` allows mutable borrows checked at runtime, you can mutate the value inside the `RefCell<T>` even when the `RefCell<T>` is immutable.
