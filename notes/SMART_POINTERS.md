@@ -238,6 +238,8 @@ Here is a recap of the reasons to choose `Box<T>`, `Rc<T>`, or `RefCell<T>`:
 - Because `RefCell<T>` allows mutable borrows checked at runtime, you can mutate the value inside the `RefCell<T>` even when the `RefCell<T>` is immutable.
 
 Here is an example of a use-cae for `RefCell<T>`:
+*The name comes from the Cell pattern, which is used in Rust (and other languages) to provide controlled mutability.*
+*A cell is a container that manages access to its inner value in a way that ensures safety according to a specific set of rules.*
 
 We will explore writing tests for the following code:
 ```rs
@@ -373,3 +375,8 @@ When creating immutable and mutable references, we use the & and &mut syntax, re
 With `RefCell<T>`, we use the `borrow` and `borrow_mut` methods, which are part of the safe API that belongs to `RefCell<T>`.
 The `borrow` method returns the smart pointer type `Ref<T>`, and `borrow_mut` returns the smart pointer type `RefMut<T>`.
 Both types implement `Deref`, so we can treat them like regular references.
+
+The `RefCell<T>` keeps track of how many `Ref<T>` and `RefMut<T>` smart pointers are currently active.
+Every time we call borrow, the `RefCell<T>` increases its count of how many immutable borrows are active.
+When a `Ref<T>` value goes out of scope, the count of immutable borrows goes down by one.
+Just like the compile-time borrowing rules, `RefCell<T>` lets us have many immutable borrows or one mutable borrow at any point in time.
