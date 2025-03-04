@@ -380,3 +380,8 @@ The `RefCell<T>` keeps track of how many `Ref<T>` and `RefMut<T>` smart pointers
 Every time we call borrow, the `RefCell<T>` increases its count of how many immutable borrows are active.
 When a `Ref<T>` value goes out of scope, the count of immutable borrows goes down by one.
 Just like the compile-time borrowing rules, `RefCell<T>` lets us have many immutable borrows or one mutable borrow at any point in time.
+
+## Combining Rc<T> & RefCell<T>
+A common way to use `RefCell<T>` is in combination with `Rc<T>`. 
+Recall that `Rc<T>` lets you have multiple owners of some data, but it only gives immutable access to that data.
+If you have an `Rc<T>` that holds a `RefCell<T>`, you can get a value that can have multiple owners and that you can mutate!
