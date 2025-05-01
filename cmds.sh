@@ -1,4 +1,5 @@
 cargo new restaurant --lib --vcs none
+cargo add anchor-lang
 
 cargo test -- --test-threads=1
 cargo test -- --show-output
